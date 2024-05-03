@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="733ba044-92e1-4499-b5cd-34fb156e9eae" file="${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="d36a2259-7a3c-4a52-b977-41c57c89d43c" name="env" value="dev" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d89d9b13-6cb2-4a1c-b3c4-6cb6468eb6b6" >
+		<http:listener-connection host="0.0.0.0" port="8081" readTimeout="1000000"/>
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="815790f8-637d-472e-882c-5976603b13fc" />
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="4d4c431f-1099-4a60-b926-d360bb929ecb" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Shaziya612@" database="world" />
+	</db:config>
+	<api-gateway:autodiscovery apiId="19458821" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="53cf02d0-5fbb-45f7-8d33-792bdbbb2992" flowRef="diy1systemapi-main" />
+</mule>

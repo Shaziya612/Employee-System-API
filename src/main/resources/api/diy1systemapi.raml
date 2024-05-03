@@ -1,0 +1,50 @@
+#%RAML 1.0
+title: DIY1SystemAPI
+
+traits:
+  errorResponce: !include errortrait.raml
+resourceTypes:
+  resource: !include resourceType.raml
+
+# API
+/employee:
+  is: [errorResponce]
+  type: resource
+  post:
+    body:
+      application/json:
+       example:
+         {"employee":
+         [ 
+          {
+            "name": "Tom",
+            "id": "123",
+            "phone": "8096123456",
+            "city": "TPT"
+          },
+          {
+            "name": "jerry",
+            "id": "456",
+            "phone": "2345678235",
+            "city": "Bangloure"
+          }
+         ] }
+               
+    responses:
+      200:
+        description: Successful response for employee POST method
+      
+  /{id}:
+    get:
+      is:
+        - errorResponce
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                    {
+                        "message": "Success Response"
+                      }  
+      
+

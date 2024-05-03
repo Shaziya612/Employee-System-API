@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+    <apikit:config name="diy1systemapi-config" api="diy1systemapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	
+	<flow name="diy1systemapi-main">
+        <http:listener path="/api/*" config-ref="HTTP_Listener_config">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="diy1systemapi-config" />
+        <error-handler ref="global-error-handlerError_Handler" />
+		
+        
+    </flow>
+	<flow name="get:\employee:diy1systemapi-config">
+		<logger level="INFO" doc:name="Logger" doc:id="181e1570-c996-4b61-8ac6-d8a9fc895b40" message="Employee data"/>
+		<flow-ref doc:name="Flow Reference" doc:id="a54c6a3f-bf47-405d-ae4b-202002192ac1" name="employeByQueryParamSub_Flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b09e12ab-e50a-4fbc-ae91-7747d625a61a" message='"loggerMessage"'/>
+    </flow>
+    <flow name="get:\employee\(id):diy1systemapi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="7a38e936-21f9-4403-9af0-0940166dadb9" name="employeeByIdFlow"/>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: payload
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+	<flow name="post:\employee:application\json:diy1systemapi-config">
+		<db:insert doc:name="Insert" doc:id="5aacdbe2-07d9-4b86-8e91-ff4203e71f2b" config-ref="Database_Config1">
+			<db:sql><![CDATA[insert into employee(emp_id,emp_name,emp_Dept,email)Values(:emp_id,:emp_name,:emp_Dept,:email)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+ emp_id : payload.emp_id,
+ emp_name: payload.emp_name,
+ emp_Dept: payload.emp_Dept,
+ email: payload.email
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Status":200,
+	"message": "Success"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<!-- [STUDIO:"Try"]<try doc:name="Try" doc:id="ec3723fb-636e-46cb-b4e0-379889b14483" >
+			<raise-error doc:name="Raise error" doc:id="12c7597d-7b00-44b7-b3a2-b2ae19a520b9" type="CUSTOM:ERROR" description="Random Error" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="77bbad68-832d-458c-9475-eaae87de38b9" >
+					<ee:transform doc:name="Transform Message" doc:id="6ae899c2-4b22-4996-a4bc-00c3016d3493">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+	"status":"error from main flow",
+	"message":"Bad response"
+}&#93;&#93;></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try> [STUDIO] -->
+		<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="7be331e8-d6e9-4411-b541-25c64da02bd1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+&#45;&#45;-
+payload&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
+    </flow>
+</mule>

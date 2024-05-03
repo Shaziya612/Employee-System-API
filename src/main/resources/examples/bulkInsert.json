@@ -1,0 +1,20 @@
+[
+    {
+    "emp_id":"12",
+    "emp_name": "Divya",
+    "emp_Dept": "HR",
+    "email": "divya123@gmail.com"
+},
+{
+    "emp_id":"13",
+    "emp_name": "Noor",
+    "emp_Dept": "IT",
+    "email": "noor@gmail.com"
+},
+{
+    "emp_id":"14",
+    "emp_name": "Ayesha",
+    "emp_Dept": "HR",
+    "email": "ayesha@gmail.com"
+}
+]

@@ -1,0 +1,19 @@
+#%RAML 1.0 ResourceType
+
+get:
+  queryParameters:
+    Id:
+      type: string
+      description: First Parameter
+    city:
+      type: string
+      description: Second Parameter
+  responses:
+    200:
+      description: Successful response
+      body:
+        application/json:
+          example:
+            {
+              "message": "Success Response"
+            }  

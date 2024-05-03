@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="employeeByIdFlow" doc:id="58833266-ad38-4bb0-a30e-36be449282dd" >
+		<logger level="INFO" doc:name="Logger" doc:id="c7728b1d-e27a-4986-83ae-0bbe1545e675" message="Employee Data" />
+		<db:select doc:name="Select" doc:id="8c96b121-d9ae-40ee-aebf-e27568259819" config-ref="Database_Config1">
+			<db:sql ><![CDATA[SELECT * FROM world.employee where emp_id= :emp_id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+  'emp_id':attributes.uriParams.id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="6609c1de-4f68-43e4-9403-075d447f897b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<!-- [STUDIO:"Set Payload"]<set-payload value="After execution" doc:name="Set Payload" doc:id="c878cac2-a40c-4c01-8aff-9a8dff66af66" /> [STUDIO] -->
+		<error-handler >
+			<!-- <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c6725e5c-bb71-42f5-b23a-d0f076258622" >
+				<logger level="ERROR" doc:name="Logger" doc:id="3cff97be-7ad4-47f3-8b50-cd5305b328bd" message="In validation error"/>
+			</on-error-propagate> -->
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="31e4aaf0-7849-40d5-93be-313bb0bb927d" >
+				<logger level="INFO" doc:name="Logger" doc:id="1dc9ee62-41ef-4536-88b1-8d47e9ad3906" message="In validation error"/>
+				<set-payload value="in on error continue" doc:name="Set Payload" doc:id="3aa5dda5-e61d-4d56-88f9-6712d35286e1" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<sub-flow name="employeByQueryParamSub_Flow" doc:id="e1a4e59b-55cf-44db-b78c-19a5b5ba0d29" >
+		<db:select doc:name="Select" doc:id="f38d7bf7-ac25-4cd9-a2b4-f17a2f5cd660" config-ref="Database_Config1">
+			<db:sql ><![CDATA[SELECT * FROM world.employee where emp_id= :emp_id and emp_City= :emp_City;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+  'emp_id':attributes.queryParams.Id,
+  'emp_City':attributes.queryParams.city
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="ff8dea65-3d03-47c7-b2b7-1a570bff1be6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
