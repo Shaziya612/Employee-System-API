@@ -41,6 +41,7 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0f8107cd-385a-4b8d-aea4-5a2694ef26a8" message="payload"/>
     </flow>
 	<flow name="post:\employee:application\json:diy1systemapi-config">
 		<db:insert doc:name="Insert" doc:id="5aacdbe2-07d9-4b86-8e91-ff4203e71f2b" config-ref="Database_Config1">
