@@ -41,6 +41,7 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0f8107cd-385a-4b8d-aea4-5a2694ef26a8" message="payload"/>
     </flow>
 	<flow name="post:\employee:application\json:diy1systemapi-config">
 		<db:insert doc:name="Insert" doc:id="5aacdbe2-07d9-4b86-8e91-ff4203e71f2b" config-ref="Database_Config1">
@@ -63,6 +64,7 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5aa34cbf-b898-47c6-9a43-468fa1e9eea5" message="success"/>
 		<!-- [STUDIO:"Try"]<try doc:name="Try" doc:id="ec3723fb-636e-46cb-b4e0-379889b14483" >
 			<raise-error doc:name="Raise error" doc:id="12c7597d-7b00-44b7-b3a2-b2ae19a520b9" type="CUSTOM:ERROR" description="Random Error" />
 			<error-handler >
